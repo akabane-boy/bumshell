@@ -7,3 +7,10 @@
 - Skips blank input or whitespace-only input
 - Tokenizes command up to 32 arguments
 - Executes external commands using fork() and execvp() system calls
+
+## Structure
+later...
+
+## TODO:
+- Study Makefile (how it works)
+

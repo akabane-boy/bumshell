@@ -1,5 +1,6 @@
 # Ignore compiled binaries in src/
 src/main
+bumshell
 
 # Ignore all compiled binaries
 **/a.out
