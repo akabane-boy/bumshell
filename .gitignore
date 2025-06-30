@@ -1,0 +1,5 @@
+# Ignore compiled binaries in src/
+src/main
+
+# Ignore all compiled binaries
+**/a.out

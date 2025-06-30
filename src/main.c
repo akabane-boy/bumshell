@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <unistd.h> /* For fork() */
+#include <sys/wait.h> /* For wait() */
 
 /* declaration */
 int is_blank_string(char *buffer, size_t buff_size);
-size_t tokenize_input(char *buffer, char **args);
+int tokenize_input(char *buffer, char **args);
 
 int main(void)
 {
@@ -41,8 +43,8 @@ int main(void)
 			continue;
 		}
 
+
 		/* 
-		 * TODO:
 		 * FROM HERE: dealing with input string 
 		 */
 
@@ -52,19 +54,49 @@ int main(void)
 		/*
 		 * tokenize the user input based on spaces
 		 */
-		/* FUNCTION: tokenize args */
 		num_of_arg = tokenize_input(buffer, args);
 
-		/* for debugging */
-		// printf("sizeof *args[i]: %zu\n", sizeof(args[0]));
-		for (i = 0; i <= num_of_arg; i++) { 
-			printf("Items of args[%d]: %s\n", i, args[i]);
+
+		/* 
+		 * TODO: Deals with token
+		 */
+
+		pid_t pid;
+
+		pid = fork(); 
+		/* 
+		 * creates child process which is completely same to
+		 * parents process.
+		 */
+
+		/* From here, parallel world begins. */
+		if (pid == -1) {
+			perror("fork failed");
+			continue;
+		} else if (pid == 0) { 
+			/* This code runs in the child process */
+			printf("Child process started!: PID = %d\n", getpid());
+			execvp(args[0], args); /* execute args[o] followed by args */
+
 			/* 
-			 * %s needs string. In other words,
-			 * it needs pointer to char
-			 * Thus, not *args[i] but args[i]
+			 * By execvp() function, child process gets replaced by new program
+			 * that specified in execvp()'s argument.
+			 * So, if program that is replaced by execvp successfully ends,
+			 * then child process successfully ends.
 			 */
+
+			/* execvp only returns if an error occurs */
+			perror("execvp failed"); /* This line is reached only on error */
+			exit(EXIT_FAILURE);
+		} else {
+			/* This code runs in the parent process */
+			wait(NULL); /* Wait for the child process to complete */
+			printf("Child process done!\n");
+			printf("Now Parent process started!: PID = %d\n", getpid());
 		}
+
+		printf("Done forking.\nNow: PID = %d\n", getpid()); /* Both parent and child execute this */
+
 	}
 
 	/* free memory */
@@ -116,7 +148,7 @@ int tokenize_input(char *buffer, char **args)
 		}
 	} while (token = strtok(NULL, " "));
 
-	args[i] = NULL; /* required for execvp(). What is this? */
+	args[i] = NULL; /* required for execvp(). */
 
 	return num_of_arg;
 }
