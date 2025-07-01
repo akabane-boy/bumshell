@@ -8,6 +8,7 @@
 #include "../include/input.h" /* is_blank_string() */
 #include "../include/parser.h" /* tokenize_input */
 #include "../include/executor.h" /* execute_command */
+#include "../include/builtins.h" /* built-ins */
 
 int main(void)
 {
@@ -50,6 +51,11 @@ int main(void)
 		 * tokenize the user input based on spaces
 		 */
 		tokenize_input(buffer, args);
+
+		/*
+		 * handles built-in commands!
+		 */
+		if (built_in(args) == 1) continue;
 
 		/* executing command via fork and execvp */
 		execute_command(args);

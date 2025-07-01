@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude
 
 # Source and object files
-SRC = src/main.c src/input.c src/parser.c src/executor.c
+SRC = src/main.c src/input.c src/parser.c src/executor.c src/builtins.c
 OBJ = $(SRC:.c=.o)
 
 # Output executable
